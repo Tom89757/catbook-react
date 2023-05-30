@@ -18,29 +18,23 @@
 const validator = require("./validator");
 validator.checkSetup();
 
-//import libraries needed for the webserver to work!
+// import libraries needed for the webserver to work!
 const express = require("express"); // backend framework for our node server.
-const session = require("express-session"); // library that stores info about each connected user.
-const mongoose = require("mongoose"); // library to connect to MongoDB
+const mongoose = require("mongoose")
 const path = require("path"); // provide utilities for working with file and directory paths
 
-const api = require("./api");
-const auth = require("./auth");
-
+const api = require("./api.js");
 // Server configuration below
-// TODO change connection URL after setting up your own database
-const mongoConnectionURL =
-  "mongodb+srv://weblab:jAT4po55IAgYWQgR@catbook-ylndp.mongodb.net/test?retryWrites=true&w=majority";
-// TODO change database name to the name you chose
+// TODO (step-1): change connection URL after setting up your own database
+const mongoConnectionURL = "mongodb+srv://ft:z5EdLC82enz1WboU@cluster0.ugqh22m.mongodb.net/?retryWrites=true&w=majority";
+
+// TODO (for your own websites): change database name to the name you chose
 const databaseName = "catbook";
+const options = { useNewUrlParser: true, useUnifiedTopology: true, dbName: databaseName}
 
 // connect to mongodb
 mongoose
-  .connect(mongoConnectionURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: databaseName,
-  })
+  .connect(mongoConnectionURL, options)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
@@ -48,23 +42,20 @@ mongoose
 const app = express();
 app.use(validator.checkRoutes);
 
-// set up bodyParser, which allows us to process POST requests
+// allow us to parse POST request data using middleware
 app.use(express.json());
 
-// set up a session, which will persist login data across requests
-app.use(
-  session({
-    secret: "session-secret",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// connect API routes from api.js
 
-// this checks if the user is logged in, and populates "req.user"
-app.use(auth.populateCurrentUser);
-
-// connect API routes to the file ./api.js
+const { createProxyMiddleware } = require("http-proxy-middleware");
 app.use("/api", api);
+// app.use("/api", createProxyMiddleware({
+//   target: 'http://127.0.0.1:1080',
+//   changeOrigin: true,
+//   pathRewrite: {
+//     '^/api': ''
+//   }
+// }));
 
 // load the compiled react files, which will serve /index.html and /bundle.js
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
@@ -90,6 +81,8 @@ app.use((err, req, res, next) => {
     message: err.message,
   });
 });
+
+
 
 // hardcode port to 3000 for now
 const port = 3000;

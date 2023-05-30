@@ -1,4 +1,5 @@
 const { OAuth2Client } = require("google-auth-library");
+const BaiduOAuth2 = require("baidu-oauth2");
 const User = require("./models/user");
 
 // create a new OAuth client used to verify google sign-in
