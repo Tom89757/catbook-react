@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { post } from "../../utilities";
 
 import "./NewPostInput.css";
-import { post } from "../../utilities";
 
 /**
  * New Post is a parent component for all input components
@@ -48,40 +48,38 @@ const NewPostInput = (props) => {
 };
 
 /**
+ * New Story is a New Post component for stories
+ */
+const NewStory = (props) => {
+  // TODO (step4): implement addStory
+  const addStory = (value) => {
+    const body = { content: value};
+    post("/api/story", body).then((story) => {
+      props.addNewStory(story);
+    });
+  }
+  // TODO (step4): implement render
+  return <NewPostInput defaultText="New Story" onSubmit={addStory} />;
+};
+
+
+/**
  * New Comment is a New Post component for comments
  *
  * Proptypes
- * @param {string} defaultText is the placeholder text
  * @param {string} storyId to add comment to
  */
 const NewComment = (props) => {
   const addComment = (value) => {
-    const body = { parent: props.storyId, content: value };
+    // TODO (step8): implement addComment (refer to NewStory)
+    const body = { parent: props.storyId, content: value};
     post("/api/comment", body).then((comment) => {
-      // display this comment on the screen
       props.addNewComment(comment);
-    });
+    })
   };
 
-  return <NewPostInput defaultText="New Comment" onSubmit={addComment} />;
-};
-
-/**
- * New Story is a New Post component for comments
- *
- * Proptypes
- * @param {string} defaultText is the placeholder text
- */
-const NewStory = (props) => {
-  const addStory = (value) => {
-    const body = { content: value };
-    post("/api/story", body).then((story) => {
-      // display this story on the screen
-      props.addNewStory(story);
-    });
-  };
-
-  return <NewPostInput defaultText="New Story" onSubmit={addStory} />;
+  // TODO (step8): implement render (refer to NewStory)
+  return <NewPostInput defaultText="New Comment" onSubmit={addComment}/>;
 };
 
 export { NewComment, NewStory };

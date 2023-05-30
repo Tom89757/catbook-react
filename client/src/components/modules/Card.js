@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from "react";
-import SingleStory from "./SingleStory.js";
-import CommentsBlock from "./CommentsBlock.js";
+import React, { useEffect, useState } from "react";
 import { get } from "../../utilities";
+// TODO (step6): import SingleStory
+import SingleStory from "./SingleStory.js";
+// TODO (step7): import SingleComment
+import SingleComment from "./SingleComment.js";
+// TODO (step8): import NewComment
+// import { NewComment } from "./NewPostInput";
+// TODO (step9): import CommentsBlock
+import CommentsBlock from "./CommentsBlock";
 
 import "./Card.css";
 
@@ -11,39 +17,37 @@ import "./Card.css";
  * Proptypes
  * @param {string} _id of the story
  * @param {string} creator_name
- * @param {string} creator_id
  * @param {string} content of the story
  */
 const Card = (props) => {
+  // TODO (step6): define state to hold comments (refer to Feed)
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    get("/api/comment", { parent: props._id }).then((comments) => {
-      setComments(comments);
+    // TODO (step6): implement a GET call to retrieve comments,
+    // and assign it to state
+    get("/api/comment", { parent: props._id }).then((commentObjs) => {
+      setComments(commentObjs);
     });
   }, []);
 
-  // this gets called when the user pushes "Submit", so their
-  // post gets added to the screen right away
+  // and render the comments from state (with JSON.stringify)
+  // from state using a map (refer to Feed)
+  // TODO (step7): map comments from state into SingleComment
+  // components (refer to Feed)
+
+  // TODO (step6): render a SingleStory using props,
+  // TODO (step8): add in the NewComment component (refer to Feed)
+  // TODO (step9): use CommentsBlock
+
   const addNewComment = (commentObj) => {
     setComments(comments.concat([commentObj]));
   };
 
   return (
     <div className="Card-container">
-      <SingleStory
-        _id={props._id}
-        creator_name={props.creator_name}
-        creator_id={props.creator_id}
-        content={props.content}
-      />
-      <CommentsBlock
-        story={props}
-        comments={comments}
-        creator_id={props.creator_id}
-        userId={props.userId}
-        addNewComment={addNewComment}
-      />
+      <SingleStory _id={props._id} creator_name={props.creator_name} content={props.content} />
+      <CommentsBlock storyId={props._id} comments={comments} addNewComment={addNewComment} />
     </div>
   );
 };
