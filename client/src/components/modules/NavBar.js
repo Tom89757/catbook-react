@@ -41,6 +41,7 @@ const NavBar = (props) => {
             buttonText="Login"
             onSuccess={props.handleLogin}
             onFailure={(err) => console.log(err)}
+            crossOrigin={false}
             className="NavBar-link NavBar-login"
           />
         )}
